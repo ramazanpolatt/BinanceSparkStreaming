@@ -1,0 +1,103 @@
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    hostname: kafka
+    container_name: kafka
+    networks:
+      - pipeline-net
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: 1
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      # Define two separate listener names
+      KAFKA_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://kafka:9093
+      # Map internal traffic to 'kafka' and external to 'localhost'
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.0
+    networks:
+      - pipeline-net
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # Block until Kafka is reachable
+      echo 'Waiting for Kafka to be ready...'
+      cub kafka-ready -b kafka:9092 1 30
+      
+      # Create the topic
+      echo 'Creating kafka topics...'
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic binance_trades --replication-factor 1 --partitions 1
+      
+      echo 'Successfully created topics'
+      "
+
+  binance-producer:
+    build: ./producer
+    container_name: binance-producer
+    networks:
+      - pipeline-net
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+    restart: on-failure
+
+  spark:
+    image: apache/spark:3.5.1
+    networks:
+      - pipeline-net
+    hostname: spark-container
+    ports:
+      - "4040:4040"
+    container_name: spark
+    depends_on:
+      - kafka
+      - postgres
+    volumes:
+      - ./spark:/opt/spark-apps
+      - ./ivy:/home/spark/.ivy2
+    command: >
+      /opt/spark/bin/spark-submit
+      --conf spark.jars.ivy=/home/spark/.ivy2
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,org.postgresql:postgresql:42.6.0
+      /opt/spark-apps/spark_stream.py
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - pipeline-net
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - pipeline-net
+    container_name: grafana
+    volumes:
+      - ./monitoring/grafana-provisioning:/etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
+
+
+networks:
+  pipeline-net:
+    driver: bridge
