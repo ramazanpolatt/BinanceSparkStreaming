@@ -62,7 +62,6 @@ services:
     container_name: spark
     depends_on:
       - kafka
-      - postgres
     volumes:
       - ./spark:/opt/spark-apps
       - ./ivy:/home/spark/.ivy2
