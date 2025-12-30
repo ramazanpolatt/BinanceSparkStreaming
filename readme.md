@@ -43,19 +43,24 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 ```
 
 ```
+2. Update the S3 bucket paths in the spark/spark_stream.py
 
-2. Run the Pipeline
+```
+
+```
+
+3. Run the Pipeline
    Start all services in detached mode:
     $ docker-compose up -d
 
 ```
 
 ```
-3. Verify the Flow
+4. Verify the Flow
     
-   Producer Logs: $ docker-compose logs -f binance-producer
+   Producer Logs: $ docker logs -f binance-producer
 
-   Spark Processing: $ docker-compose logs -f spark
+   Spark Processing: $ docker logs -f spark
     
    Grafana Dashboard: Open http://localhost:3000 login with admin/your_password
     
@@ -82,6 +87,8 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 [x] Windowed Aggregations (1-minute OHLCV-like)
 
 [x] S3 Data Lake Integration
+
+[ ] Move hardcoded parameters to environment variables.
 
 [ ] Next Step: Add dbt (data build tool) for silver/gold layer transformations.
 
