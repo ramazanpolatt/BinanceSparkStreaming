@@ -73,6 +73,18 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+  spark-ivy-init:
+    image: alpine:3.19
+    container_name: spark-ivy-init
+    volumes:
+      - ./ivy:/ivy
+    command: >
+      sh -c "
+      mkdir -p /ivy/cache /ivy/jars &&
+      chown -R 185:185 /ivy
+      "
+
   prometheus:
     image: prom/prometheus:latest
     networks:
