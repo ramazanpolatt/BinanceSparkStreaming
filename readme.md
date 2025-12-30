@@ -51,7 +51,7 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 
 3. Run the Pipeline
    Start all services in detached mode:
-    $ docker-compose up -d
+   $ docker-compose up -d
 
 ```
 
