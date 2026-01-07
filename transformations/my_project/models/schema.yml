@@ -1,0 +1,13 @@
+models:
+  - name: fact_silver_trades.sql
+    columns:
+      - name: symbol
+        description: The stock symbol
+        data_type: varchar
+        tests:
+          - not_null
+      - name: window_start
+        description: The start of the window of time for the trade
+        data_type: timestamp
+        tests:
+          - not_null
