@@ -18,11 +18,7 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 
 ## 🏗 Architecture
 
-```text
-Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -> Amazon S3 (Parquet)
-                                       ↓
-                            Prometheus & Grafana (Monitoring)
-```
+![Architecture Diagram](images/architecture.png)
 
 ## Features
 
