@@ -18,7 +18,7 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 
 ## 🏗 Architecture
 
-![Architecture Diagram](images/architecture.png)
+![Architecture Diagram](images/architecture_img.png)
 
 ## Features
 
