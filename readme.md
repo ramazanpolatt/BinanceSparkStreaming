@@ -1,9 +1,22 @@
-# Binance Real-Time Data Pipeline
+## Binance Real-Time Data Pipeline (End-to-End)
 
-An experimental scalable real-time data engineering pipeline that streams live cryptocurrency trade data from Binance,
-processes it with Spark Streaming, and monitors the infrastructure.
+An end-to-end data engineering pipeline that ingests live cryptocurrency trade data from Binance, processes it using
+Spark Structured Streaming, and implements a Medallion Architecture (Bronze, Silver, Gold) with dbt and Trino.
 
-## 🏗️ Architecture
+## Motivation & Project Goal
+
+The primary goal of this project is to implement a modern, scalable data stack using industry-standard tools. This
+project serves as a comprehensive hands-on exploration of:
+
+    Real-time Stream Processing: Managing high-velocity data using Kafka and Spark.
+
+    Modern Data Stack (MDS): Bridging the gap between raw streaming data and analytical insights using dbt and Trino.
+
+    Infrastructure Observability: Monitoring system performance with Prometheus and Grafana.
+
+    Containerized Orchestration: Managing a complex multi-service environment via Docker.
+
+## 🏗 Architecture
 
 ```text
 Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -> Amazon S3 (Parquet)
@@ -24,14 +37,18 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 
 ## 🛠️ Tech Stack
 
-- **Python 3.10**: Producer and Consumer logic.
-- **Apache Kafka 7.6.0**: Distributed event streaming.
-- **Apache Spark 3.5.1**: Distributed stream processing.
-- **Prometheus**: Metrics collection.
-- **Grafana**: Dashboard visualization.
-- **Docker & Docker Compose**: Orchestration.
-
-## 🚀 Getting Started
+    - Streaming: Spark Structured Streaming (3.5.1), Kafka (KRaft mode).
+    
+    - Storage: MinIO (S3 Compatible), Delta Lake format.
+    
+    - Transformation & Modeling: dbt (Data Build Tool), Trino SQL Engine.
+    
+    - Serving Layer: PostgreSQL (Serving database for Grafana).
+    
+    - Monitoring: Prometheus & Grafana.
+    
+    - Orchestration: Docker & Docker Compose.
+## Getting Started
 
 ### 1. Environment Setup
 
@@ -68,34 +85,34 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 
 ```
 
-## 📂 Project Structure
+## Project Structure
 
 - producer/: Python script to fetch data from Binance and push to Kafka.
 - spark/: Spark Streaming application logic.
 - ivy/: Local cache directory for Spark/Hadoop/Kafka JAR files.
 - monitoring/: Configuration and provisioning for Grafana.
 - prometheus.yml: Configuration for Prometheus metrics scraping.
+- trino/: Catalog configurations for S3 and Delta Lake integration.
 
-## 🔧 Configuration Details
+## Monitoring & Verification
+
+Grafana: http://localhost:3000 (Includes pre-configured "Binance Coin Hourly Price" dashboard).
+
+![Grafana Hourly Avg Prices](images/hourly_price_avg.png)
+
+![Processed Spark Batch Count](images/spark_processed_batch_count.png)
+Spark UI: http://localhost:4040.
+
+
+## Configuration Details
 
 - Spark Ivy Cache: The project mounts ./ivy to /home/spark/.ivy2 inside the container to avoid re-downloading large JAR
   files (like Kafka SQL and AWS SDK) on every run.
 - Networking: All services communicate via a dedicated internal bridge network: pipeline-net.
 
-## 🔜 Roadmap / Future Improvements
+⚠️ Implementation & Security Note
 
-[x] Windowed Aggregations (1-minute OHLCV-like)
-
-[x] S3 Data Lake Integration
-
-[ ] Move hardcoded parameters to environment variables.
-
-[ ] Next Step: Add dbt (data build tool) for silver/gold layer transformations.
-
-[ ] Next Step: Implement a Slack/Telegram bot for price alerts.
-
-[ ] Dashboarding: Create comprehensive Grafana dashboards for trade analytics.
-
-- 📄 License MIT
-
-Status: Version 1.0 - Development in Progress
+Note on Hard-coded Credentials: Several configurations (e.g., Postgres passwords, Kafka brokers) contain hard-coded
+values.
+This is an intentional choice to speed up implementation and simplify the setup for this test project.
+For production environments, these should be managed via secure secrets management tools like AWS Secrets Manager etc.
