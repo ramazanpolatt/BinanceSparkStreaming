@@ -130,8 +130,10 @@ Spark UI: http://localhost:4040.
 
 ⚠️ Implementation & Security Note
 
-Note on Hard-coded Credentials: Several configurations (e.g., Postgres passwords, Kafka brokers) contain hard-coded
+- Note on Hard-coded Credentials: Several configurations (e.g., Postgres passwords, Kafka brokers) contain hard-coded
 values.
-This is an intentional choice to speed up implementation and simplify the setup for this test project.
+
+- This is an intentional choice to speed up implementation and simplify the setup for this test project.
 For production environments, these should be managed via secure secrets management tools like AWS Secrets Manager etc.
-To update grafana binance avg price dashboard, run docker exec -it dbt dbt run 
+
+- To update grafana binance avg price dashboard, run docker exec -it dbt dbt run 
