@@ -8,13 +8,13 @@ Spark Structured Streaming, and implements a Medallion Architecture (Bronze, Sil
 The primary goal of this project is to implement a modern, scalable data stack using industry-standard tools. This
 project serves as a comprehensive hands-on exploration of:
 
-    Real-time Stream Processing: Managing high-velocity data using Kafka and Spark.
+Real-time Stream Processing: Managing high-velocity data using Kafka and Spark.
 
-    Modern Data Stack (MDS): Bridging the gap between raw streaming data and analytical insights using dbt and Trino.
+Modern Data Stack (MDS): Bridging the gap between raw streaming data and analytical insights using dbt and Trino.
 
-    Infrastructure Observability: Monitoring system performance with Prometheus and Grafana.
+Infrastructure Observability: Monitoring system performance with Prometheus and Grafana.
 
-    Containerized Orchestration: Managing a complex multi-service environment via Docker.
+Containerized Orchestration: Managing a complex multi-service environment via Docker.
 
 ## 🏗 Architecture
 
@@ -37,17 +37,17 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 
 ## 🛠️ Tech Stack
 
-    - Streaming: Spark Structured Streaming (3.5.1), Kafka (KRaft mode).
-    
-    - Storage: MinIO (S3 Compatible), Delta Lake format.
-    
-    - Transformation & Modeling: dbt (Data Build Tool), Trino SQL Engine.
-    
-    - Serving Layer: PostgreSQL (Serving database for Grafana).
-    
-    - Monitoring: Prometheus & Grafana.
-    
-    - Orchestration: Docker & Docker Compose.
+- Streaming: Spark Structured Streaming (3.5.1), Kafka (KRaft mode).
+
+- Storage: MinIO (S3 Compatible), Delta Lake format.
+
+- Transformation & Modeling: dbt (Data Build Tool), Trino SQL Engine.
+
+- Serving Layer: PostgreSQL (Serving database for Grafana).
+
+- Monitoring: Prometheus & Grafana.
+
+- Orchestration: Docker & Docker Compose.
 ## Getting Started
 
 ### 1. Environment Setup
