@@ -98,8 +98,9 @@ Binance WebSocket → Python Producer → Kafka → Spark Structured Streaming -
 
 Grafana: http://localhost:3000 (Includes pre-configured "Binance Coin Hourly Price" dashboard).
 
+Hourly Avg Prices Dashboard:
 ![Grafana Hourly Avg Prices](images/hourly_price_avg.png)
-
+Processed Batch Count Dashboard:
 ![Processed Spark Batch Count](images/spark_processed_batch_count.png)
 Spark UI: http://localhost:4040.
 
