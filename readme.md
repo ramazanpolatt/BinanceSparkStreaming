@@ -50,9 +50,18 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 
 ```
 1.  Create a file in the root directory: .env
-    AWS_ACCESS_KEY_ID=your_key
-    AWS_SECRET_ACCESS_KEY=your_secret
-    GF_SECURITY_ADMIN_PASSWORD=your_password  (Grafana password)
+    GF_SECURITY_ADMIN_PASSWORD=admin
+
+    MINIO_USERNAME=admin
+    MINIO_PASSWORD=password
+    
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    
+    DBT_TRINO_USER=admin
+    DBT_TRINO_PASSWORD=password
+    DBT_TRINO_HOST=trino
+    
 ```
 
 ```
