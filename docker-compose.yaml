@@ -62,6 +62,7 @@ services:
     container_name: spark
     depends_on:
       - kafka
+      - minio
     volumes:
       - ./spark:/opt/spark-apps
       - ./ivy:/home/spark/.ivy2
@@ -123,7 +124,19 @@ services:
     volumes:
       - ./minio_data:/data
     command: server /data --console-address ":9001"
-
+  # Create a bucket called spark-crypto spark cannot create root bucket
+  minio-create-bucket:
+    image: minio/mc
+    depends_on:
+      - minio
+    networks:
+      - pipeline-net
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set myminio http://minio:9000 admin password) do echo '...waiting for minio...' && sleep 1; done;
+      /usr/bin/mc mb myminio/spark-crypto || true;
+      exit 0;
+      "
   trino:
     image: trinodb/trino:latest
     container_name: trino
@@ -144,8 +157,6 @@ services:
     volumes:
       - ./transformations:/usr/app/dbt
       - ./transformations/profiles.yml:/root/.dbt/profiles.yml
-    profiles:
-      - dev
     ports: #To access dbt web UI
       - "6080:8080"
     networks:

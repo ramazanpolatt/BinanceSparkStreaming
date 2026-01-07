@@ -44,6 +44,7 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 - Monitoring: Prometheus & Grafana.
 
 - Orchestration: Docker & Docker Compose.
+
 ## Getting Started
 
 ### 1. Environment Setup
@@ -78,15 +79,27 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 ```
 
 ```
-4. Verify the Flow
+
+4. Run the dbt project to fill the postgres database with data
+   Start all services in detached mode:
+   
+   $ docker exec -it dbt dbt run 
+
+```
+
+```
+5. Verify the Flow
     
    Producer Logs: $ docker logs -f binance-producer
 
    Spark Processing: $ docker logs -f spark
     
-   Grafana Dashboard: Open http://localhost:3000 login with admin/your_password
+   Grafana Dashboard: Open http://localhost:3000 login with admin/your_password (Binance Coin Hourly Price Dashboard is broken at this state)
     
    Spark UI: Open http://localhost:4040
+   
+   Minio UI: Open http://localhost:9000 
+   
 
 ```
 
@@ -109,7 +122,6 @@ Processed Batch Count Dashboard:
 ![Processed Spark Batch Count](images/spark_processed_batch_count.png)
 Spark UI: http://localhost:4040.
 
-
 ## Configuration Details
 
 - Spark Ivy Cache: The project mounts ./ivy to /home/spark/.ivy2 inside the container to avoid re-downloading large JAR
@@ -122,3 +134,4 @@ Note on Hard-coded Credentials: Several configurations (e.g., Postgres passwords
 values.
 This is an intentional choice to speed up implementation and simplify the setup for this test project.
 For production environments, these should be managed via secure secrets management tools like AWS Secrets Manager etc.
+To update grafana binance avg price dashboard, run docker exec -it dbt dbt run 

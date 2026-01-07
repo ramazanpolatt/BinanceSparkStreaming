@@ -1,0 +1,12 @@
+my_project:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      host: trino
+      port: 8080
+      user: "{{ env_var('DBT_TRINO_USER', 'trino') }}"
+      catalog: postgres
+      schema: transformations
+      threads: 1
