@@ -1,9 +1,15 @@
+import os
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col, window, avg, sum, count, date_format, round
 from pyspark.sql.types import StructType, StringType, LongType
 
-s3_path = "s3a://ramazan-spark-crypto/binance/"
-checkpoint_path = "s3a://ramazan-spark-crypto/checkpoints/"
+s3_path = "s3a://spark-crypto/binance/"
+checkpoint_path = "s3a://spark-crypto/checkpoints/"
+
+access_key = os.getenv("AWS_ACCESS_KEY_ID")
+secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+endpoint = os.getenv("MINIO_ENDPOINT", "http://minio:9000")
 
 spark = SparkSession.builder \
     .appName("KafkaSparkStreaming") \
@@ -13,6 +19,11 @@ spark = SparkSession.builder \
     .config("spark.metrics.conf.*.sink.prometheusServlet.class", "org.apache.spark.metrics.sink.PrometheusServlet") \
     .config("spark.metrics.conf.*.sink.prometheusServlet.path", "/metrics/prometheus") \
     .config("spark.sql.session.timeZone", "UTC") \
+    .config("spark.hadoop.fs.s3a.access.key", access_key) \
+    .config("spark.hadoop.fs.s3a.secret.key", secret_key) \
+    .config("spark.hadoop.fs.s3a.endpoint", endpoint) \
+    .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+    .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
@@ -78,7 +89,7 @@ final_df = windowed_df.select(
 query = final_df.writeStream \
     .outputMode("append") \
     .partitionBy("hour_partition") \
-    .format("parquet") \
+    .format("delta") \
     .option("path", s3_path) \
     .option("checkpointLocation", checkpoint_path) \
     .trigger(processingTime='1 minute') \
