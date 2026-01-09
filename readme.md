@@ -81,7 +81,6 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 ```
 
 4. Run the dbt project to fill the postgres database with data
-   Start all services in detached mode:
    
    $ docker exec -it dbt dbt run 
 
@@ -94,7 +93,7 @@ Containerized Orchestration: Managing a complex multi-service environment via Do
 
    Spark Processing: $ docker logs -f spark
     
-   Grafana Dashboard: Open http://localhost:3000 login with admin/your_password (Binance Coin Hourly Price Dashboard is broken at this state)
+   Grafana Dashboard: Open http://localhost:3000 login with admin/your_password (Binance Coin Hourly Price Dashboard is not ready yet needs more data)
     
    Spark UI: Open http://localhost:4040
    
